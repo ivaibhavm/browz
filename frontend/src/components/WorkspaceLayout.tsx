@@ -5,45 +5,16 @@ import { Link } from 'react-router-dom';
 import StepsList from './StepsList';
 import FileTree from './FileTree';
 import CodePreview from './CodePreview';
+import { BACKEND_URL } from '@/config';
+import axios from 'axios';
+import { parseSteps } from '@/parseSteps';
 
 interface WorkspaceLayoutProps {
   prompt: string;
   className?: string;
 }
-
 // Mock data
-const initialSteps = [
-  { 
-    id: 1, 
-    title: 'Initialize project', 
-    description: 'Setting up the project structure', 
-    completed: true 
-  },
-  { 
-    id: 2, 
-    title: 'Create components', 
-    description: 'Building the necessary UI components', 
-    completed: false 
-  },
-  { 
-    id: 3, 
-    title: 'Style application', 
-    description: 'Applying styles and animations', 
-    completed: false 
-  },
-  { 
-    id: 4, 
-    title: 'Implement functionality', 
-    description: 'Adding interactive behavior', 
-    completed: false 
-  },
-  { 
-    id: 5, 
-    title: 'Optimize and finalize', 
-    description: 'Polishing and preparing for deployment', 
-    completed: false 
-  }
-];
+const initialSteps = [];
 
 const initialFiles = [
   {
@@ -85,27 +56,21 @@ const initialFiles = [
 ];
 
 // Mock code for demonstration
-const mockCode = `import React from 'react';
-
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Welcome to Your New Website</h1>
-        <p>Built with your prompt</p>
-      </header>
-    </div>
-  );
-}
-
-export default App;
-`;
+const mockCode = ``
 
 const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({ prompt, className }) => {
   const [steps, setSteps] = useState(initialSteps);
   const [files, setFiles] = useState(initialFiles);
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedFileId, setSelectedFileId] = useState<string>('App.jsx');
+  
+  // useEffect(() => {
+  //   const templateResponse = axios.post(`${BACKEND_URL}/api/template`, {
+  //     prompt: prompt
+  //   });
+  //   console.log(templateResponse);
+  // }, [prompt]);
+  
   
   const handleStepClick = (stepId: number) => {
     setCurrentStep(stepId);
@@ -116,23 +81,23 @@ const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({ prompt, className }) 
   };
   
   // Simulate progress
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSteps(prevSteps => {
-        const nextIncompleteStep = prevSteps.find(step => !step.completed);
-        if (!nextIncompleteStep) {
-          clearInterval(interval);
-          return prevSteps;
-        }
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setSteps(prevSteps => {
+  //       const nextIncompleteStep = prevSteps.find(step => !step.completed);
+  //       if (!nextIncompleteStep) {
+  //         clearInterval(interval);
+  //         return prevSteps;
+  //       }
         
-        return prevSteps.map(step => 
-          step.id === nextIncompleteStep.id ? { ...step, completed: true } : step
-        );
-      });
-    }, 5000);
+  //       return prevSteps.map(step => 
+  //         step.id === nextIncompleteStep.id ? { ...step, completed: true } : step
+  //       );
+  //     });
+  //   }, 5000);
     
-    return () => clearInterval(interval);
-  }, []);
+  //   return () => clearInterval(interval);
+  // }, []);
   
   return (
     <div className={cn("h-full flex flex-col", className)}>
