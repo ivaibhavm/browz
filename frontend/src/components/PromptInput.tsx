@@ -110,7 +110,7 @@ const PromptInput: React.FC<PromptInputProps> = ({ className }) => {
   };
   
   return (
-    <div className={cn("w-200 mx-auto px-4 mb-20", className)}>
+    <div className={cn("w-200 mx-auto px-4 mb-10", className)}>
       <div className="mb-6 text-center">
         <h1 className="text-5xl font-medium tracking-tight mb-5 text-white glow-effect">
           What do you want to build today?
