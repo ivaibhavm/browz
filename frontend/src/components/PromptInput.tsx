@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,11 +10,89 @@ interface PromptInputProps {
   className?: string;
 }
 
+const placeholderSuggestions = [
+  "travel agency website in which users can...",
+  "blog site for sharing recipes, including...",
+  "interactive dashboard for tracking fitness progress and...",
+  "personal finance tracker that visualizes expenses...",
+  "music streaming platform homepage featuring...",
+  "online bookstore with search and...",
+  "news website displaying articles by...",
+  "real estate listings site with map view...",
+  "event management site showing upcoming events and...",
+  "nonprofit organization homepage sharing their mission...",
+  "community forum with featured discussions...",
+  "tech conference website detailing agenda, speakers...",
+  "movie database where users can..."
+];
+
 const PromptInput: React.FC<PromptInputProps> = ({ className }) => {
   const [prompt, setPrompt] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const navigate = useNavigate();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const staticPrefix = "Create a ";
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
+  const [animatedText, setAnimatedText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) {
+        return;
+      }
+
+      const activeEl = document.activeElement;
+      if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || (activeEl as HTMLElement).isContentEditable)) {
+        return;
+      }
+
+      if (e.key.length === 1) {
+        e.preventDefault();
+        if (inputRef.current) {
+          inputRef.current.focus();
+          setPrompt(p => p + e.key);
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  useEffect(() => {
+    let typingTimeout: NodeJS.Timeout;
+    const fullText = placeholderSuggestions[placeholderIndex];
+
+    if (!isDeleting && animatedText.length < fullText.length) {
+      // Typing phase
+      typingTimeout = setTimeout(() => {
+        setAnimatedText(fullText.slice(0, animatedText.length + 1));
+      }, 30);
+    } else if (!isDeleting && animatedText.length === fullText.length) {
+      // Pause before deleting
+      typingTimeout = setTimeout(() => {
+        setIsDeleting(true);
+      }, 600);
+    } else if (isDeleting && animatedText.length > 0) {
+      // Deleting phase
+      typingTimeout = setTimeout(() => {
+        setAnimatedText(fullText.slice(0, animatedText.length - 1));
+      }, 5);
+    } else if (isDeleting && animatedText.length === 0) {
+      // Move to next suggestion
+      typingTimeout = setTimeout(() => {
+        setIsDeleting(false);
+        setPlaceholderIndex((i) => (i + 1) % placeholderSuggestions.length);
+      }, 300);
+    }
+    return () => clearTimeout(typingTimeout);
+  }, [animatedText, isDeleting, placeholderIndex]);
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,28 +126,26 @@ const PromptInput: React.FC<PromptInputProps> = ({ className }) => {
       )}>
         <form onSubmit={handleSubmit} className="relative">
           <Input
+            ref={inputRef}
+            type="text"
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            placeholder="Create a portfolio site with a dark theme that has..."
-            className="pr-12 py-6 bg-transparent border-0 text-black placeholder:text-zinc-500 focus-visible:ring-0"
+            placeholder={staticPrefix + animatedText}
+            style={{ height: '50px', width: '100%' }}
             autoFocus
           />
-          <Button
-            type="submit"
-            size="icon"
-            className={cn(
-              "absolute right-2 top-1/2 -translate-y-1/2 transition-all duration-300",
-              prompt.trim() ? "opacity-100" : "opacity-50 pointer-events-none"
-            )}
-            disabled={!prompt.trim() || isSubmitting}
-          >
-            <ArrowRight className={cn(
-              "transition-transform duration-300",
-              prompt.trim() ? "translate-x-0" : "-translate-x-1"
-            )} />
-          </Button>
+          {prompt.trim() ? (
+            <Button
+              type="submit"
+              size="icon"
+              className="absolute right-2 top-1/2 -translate-y-1/2 transition-all duration-300"
+              disabled={isSubmitting}
+            >
+              <ArrowRight className="transition-transform duration-300" />
+            </Button>
+          ) : null }
         </form>
       </Card>
       

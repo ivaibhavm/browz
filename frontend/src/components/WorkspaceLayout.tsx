@@ -64,12 +64,24 @@ const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({ prompt, className }) 
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedFileId, setSelectedFileId] = useState<string>('App.jsx');
   
-  // useEffect(() => {
-  //   const templateResponse = axios.post(`${BACKEND_URL}/api/template`, {
-  //     prompt: prompt
-  //   });
-  //   console.log(templateResponse);
-  // }, [prompt]);
+  async function init() {
+    const templateResponse = await axios.post(`${BACKEND_URL}/api/template`, {
+      prompt: sessionStorage.getItem('prompt')
+    });
+    const messages = templateResponse.data.prompts;
+    const chatMessages = [
+      { role: 'user', content: messages[0] },
+      { role: 'user', content: messages[1] }
+    ];
+    const chatResponse = await axios.post(`${BACKEND_URL}/api/chat`, {
+      messages: chatMessages
+    });
+    const chat = chatResponse.data;
+    console.log(chat);
+  }
+  useEffect(() => {
+    init();
+  }, []);
   
   
   const handleStepClick = (stepId: number) => {
