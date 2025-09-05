@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import StepsList from './StepsList';
 import CodePreview from './CodePreview';
 import { BACKEND_URL } from '@/config';
@@ -8,29 +8,26 @@ import axios from 'axios';
 import { parseSteps } from '@/parseSteps';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
+import { Input } from './ui/input';
+import { ArrowRight } from 'lucide-react';
 
-interface WorkspaceLayoutProps {
-  prompt: string;
-  className?: string;
-}
-// Mock data
+
 const initialSteps = [];
 
-
-
-// Mock code for demonstration
 const mockCode = ``
 
-const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({ prompt, className }) => {
+const WorkspaceLayout = () => {
+  const location = useLocation()
+  const prompt = location.state?.prompt
   const [steps, setSteps] = useState(initialSteps);
   const [selectedFileId, setSelectedFileId] = useState<string>('App.jsx');
   const [currentStep, setCurrentStep] = useState(1);
   const [showPublishPopup, setShowPublishPopup] = useState(false);
-  
+  const inputRef = useRef<HTMLInputElement>(null);
   
   async function init() {
     // const templateResponse = await axios.post(`${BACKEND_URL}/api/template`, {
-    //   prompt: sessionStorage.getItem('prompt')
+    //   prompt: prompt
     // });
 
     // setSteps(parseSteps(templateResponse.data.uiPrompts))
@@ -61,28 +58,32 @@ const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({ prompt, className }) 
   const handleClosePopup = () => {
     setShowPublishPopup(false);
   }
+
+  const handleSubmit = () => {
+
+  }
   
   // Simulate progress
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setSteps(prevSteps => {
-  //       const nextIncompleteStep = prevSteps.find(step => !step.completed);
-  //       if (!nextIncompleteStep) {
-  //         clearInterval(interval);
-  //         return prevSteps;
-  //       }
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSteps(prevSteps => {
+        const nextIncompleteStep = prevSteps.find(step => !step.completed);
+        if (!nextIncompleteStep) {
+          clearInterval(interval);
+          return prevSteps;
+        }
         
-  //       return prevSteps.map(step => 
-  //         step.id === nextIncompleteStep.id ? { ...step, completed: true } : step
-  //       );
-  //     });
-  //   }, 5000);
+        return prevSteps.map(step => 
+          step.id === nextIncompleteStep.id ? { ...step, completed: true } : step
+        );
+      });
+    }, 5000);
     
-  //   return () => clearInterval(interval);
-  // }, []);
+    return () => clearInterval(interval);
+  }, []);
   
   return (
-    <div className={cn("h-full flex flex-col", className)}>
+    <div className={cn("h-full flex flex-col")}>
       {/* Header */}
       <header className="p-4 border-b border-white/10">
         <div className="flex justify-between items-center">
@@ -104,19 +105,37 @@ const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({ prompt, className }) 
           </Card>
         </div>
       ) : null}
-      {/* Main content area - 3 columns */}
+      
       <div className="flex-grow grid grid-cols-1 m-4 gap-4 md:grid-cols-[400px_1fr] xl:grid-cols-[400px_1fr] h-full">
-        {/* Column 1: Steps */}
-        <div className="workspace-column rounded-lg overflow-y-auto bg-[#171717]">
+        
+        <div className="workspace-column rounded-lg h-full flex flex-col overflow-hidden backdrop-blur-sm border border-[#333] bg-[#101010]">
           <StepsList 
             steps={steps} 
             currentStep={currentStep} 
             onStepClick={handleStepClick}
+            className="flex-1 min-h-0 max-h-[70vh] overflow-y-auto custom-scrollbar"
           />
+          <form onSubmit={handleSubmit} className="relative">
+          <textarea
+            ref={inputRef as any}
+            style={{ height: '120px', width: '100%', resize: 'none' }}
+            autoFocus
+            className="bg-[#191919] p-3 pr-14 w-full text-white align-top custom-scrollbar focus:outline-none focus:ring-0 focus:border-transparent focus:shadow-none"
+            rows={5}
+          />
+          {prompt.trim() ? (
+            <Button
+              type="submit"
+              size="icon"
+              className="absolute right-2 top-1/4 -translate-y-1/2 transition-all duration-300"
+            >
+              <ArrowRight className="transition-transform duration-300" />
+            </Button>
+          ) : null }
+        </form>
         </div>
         
-        {/* Column 3: Code/Preview */}
-        <div className="workspace-column rounded-lg bg-[#171717] flex-grow">
+        <div className="workspace-column rounded-lg backdrop-blur-sm  border border-[#333] bg-[#101010] flex-grow">
           <CodePreview 
             fileId={selectedFileId} 
             code={mockCode} 

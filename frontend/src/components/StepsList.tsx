@@ -26,7 +26,7 @@ const StepsList: React.FC<StepsListProps> = ({
     <div className={cn("p-4", className)}>
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-lg font-medium text-white">Steps to follow</h2>
-        <span className="text-sm text-zinc-400">
+        <span className="text-sm text-white">
           {steps.filter(s => s.completed).length}/{steps.length} complete
         </span>
       </div>
@@ -54,7 +54,7 @@ const StepsList: React.FC<StepsListProps> = ({
               <div>
                 <h3 className={cn(
                   "font-medium mb-1 text-sm", 
-                  step.completed ? "text-white" : "text-zinc-300"
+                  step.completed ? "text-zinc-300" : "text-white"
                 )}>
                   {step.title}
                 </h3>

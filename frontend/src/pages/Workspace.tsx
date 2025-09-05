@@ -1,22 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import NightSky from '@/components/NightSky';
 import WorkspaceLayout from '@/components/WorkspaceLayout';
 
 const Workspace: React.FC = () => {
-  const [prompt, setPrompt] = useState<string>('');
+  const location = useLocation()
+  const prompt = location.state?.prompt
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   
   useEffect(() => {
-    // Get prompt from session storage
-    const storedPrompt = sessionStorage.getItem('prompt');
-    if (!storedPrompt) {
+    if (!prompt) {
       navigate('/');
       return;
     }
-    
-    setPrompt(storedPrompt);
     
     // Simulate loading
     const timer = setTimeout(() => {
@@ -24,7 +21,7 @@ const Workspace: React.FC = () => {
     }, 1000);
     
     return () => clearTimeout(timer);
-  }, [navigate]);
+  }, [navigate, prompt]);
   
   if (isLoading) {
     return (
@@ -43,7 +40,7 @@ const Workspace: React.FC = () => {
     <div className="min-h-screen w-full flex items-stretch">
       <NightSky className="fixed inset-0" density="low" />
       <div className="relative z-10 w-full animate-page-transition-in">
-        <WorkspaceLayout prompt={prompt} />
+        <WorkspaceLayout />
       </div>
     </div>
   );

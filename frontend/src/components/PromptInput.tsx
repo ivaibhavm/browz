@@ -103,9 +103,7 @@ const PromptInput: React.FC<PromptInputProps> = ({ className }) => {
     
     // Simulating a brief loading state before navigation
     setTimeout(() => {
-      // Store the prompt in sessionStorage to access it on the workspace page
-      sessionStorage.setItem('prompt', prompt);
-      navigate('/workspace');
+      navigate('/workspace' , { state : {prompt} });
     }, 600);
   };
   
