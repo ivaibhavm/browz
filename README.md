@@ -1,4 +1,4 @@
-# Browz - AI-Powered Website Builder
+# Browz
 
 Browz is an innovative web application that helps users create beautiful, functional websites using natural language prompts. Simply describe what you want, and our AI will help you build it.
 
