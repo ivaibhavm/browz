@@ -119,7 +119,7 @@ const PromptInput: React.FC<PromptInputProps> = ({ className }) => {
       </div>
       
       <Card className={cn(
-        "glass-effect transition-all duration-300 overflow-hidden", 
+        "glass-effect transition-all duration-300", 
         isFocused ? "shadow-lg shadow-primary/20" : ""
       )}>
         <form onSubmit={handleSubmit} className="relative">
@@ -131,7 +131,7 @@ const PromptInput: React.FC<PromptInputProps> = ({ className }) => {
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             placeholder={staticPrefix + animatedText}
-            style={{ height: '50px', width: '100%' }}
+            style={{ minHeight: '50px', width: '94.5%' }}
             autoFocus
           />
           {prompt.trim() ? (

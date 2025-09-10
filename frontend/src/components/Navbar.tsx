@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
+import { Link } from 'react-router-dom';
 
 const AnimatedNavLink = ({ href, children }: { href: string; children: React.ReactNode }) => {
   const defaultTextColor = 'text-gray-300';
@@ -49,14 +50,15 @@ export function Navbar() {
 
   const logo = (
     <div className='text-white'>
-        browz
+        <Link to="/">
+            <img src='logo.png' height={40} width={40}></img>
+        </Link>
     </div>
   );
 
   const navLinksData = [
-    { label: 'Contact', href: ''},
+    { label: 'Contact', href: 'https://x.com/mvahbiav'},
     { label: 'Github', href: 'https://github.com/ivaibhavm/browz' },
-    { label: 'Do not click', href: 'https://youtu.be/dQw4w9WgXcQ?si=HqKVG0VabhoLD61H' },
   ];
 
   return (

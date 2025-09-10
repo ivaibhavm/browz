@@ -23,15 +23,9 @@ const StepsList: React.FC<StepsListProps> = ({
   className
 }) => {
   return (
-    <div className={cn("p-4", className)}>
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-lg font-medium text-white">Steps to follow</h2>
-        <span className="text-sm text-white">
-          {steps.filter(s => s.completed).length}/{steps.length} complete
-        </span>
-      </div>
-      
+    <div className={cn("p-4", className)}>     
       <div className="space-y-3">
+        
         {steps.map((step) => (
           <div 
             key={step.id}

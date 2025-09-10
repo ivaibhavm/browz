@@ -20,25 +20,21 @@ Browz is an innovative web application that helps users create beautiful, functi
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/i-amvaibhav/browz.git
+git clone https://github.com/ivaibhavm/browz.git
 cd browz
 ```
 
 2. Install dependencies:
 ```bash
 npm install
-# or
-yarn install
 ```
 
 3. Start the development server:
 ```bash
 npm run dev
-# or
-yarn dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
+4. Open [http://localhost:5173](http://localhost:5173) in your browser
 
 ## 💡 Usage
 
@@ -56,16 +52,5 @@ yarn dev
 ## 🤝 Contributing
 
 We welcome contributions! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Thanks to all contributors who have helped shape this project
-- Built with [Next.js](https://nextjs.org/)
-- Powered by advanced AI models
-
 
 Made with ❤️ by Vaibhav

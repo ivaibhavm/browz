@@ -70,9 +70,6 @@ const NightSky: React.FC<NightSkyProps> = ({
         const el = star as HTMLElement;
         const speed = index % 3 === 0 ? 2 : index % 2 === 0 ? 1 : 0.5;
         
-        const x = parseFloat(el.style.left.replace('px', ''));
-        const y = parseFloat(el.style.top.replace('px', ''));
-        
         el.style.transform = `translate(${xPos * speed * 5}px, ${yPos * speed * 5}px)`;
       });
     };
@@ -88,15 +85,10 @@ const NightSky: React.FC<NightSkyProps> = ({
     <div 
       ref={containerRef}
       className={cn(
-        "relative w-full h-full overflow-hidden bg-gradient-to-b from-night-darker via-night to-night-lighter",
+        "relative w-full h-full overflow-hidden bg-black",
         className
       )}
     >
-      {/* Subtle glow effects */}
-      <div className="absolute top-[20%] left-[15%] w-[30vw] h-[30vw] rounded-full bg-blue-500/5 blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-[10%] right-[10%] w-[25vw] h-[25vw] rounded-full bg-indigo-500/5 blur-[100px] pointer-events-none" />
-      
-      {/* Children content */}
       <div className="relative z-10">
         {children}
       </div>

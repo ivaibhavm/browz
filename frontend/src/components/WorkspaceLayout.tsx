@@ -128,6 +128,7 @@ const WorkspaceLayout = () => {
               type="submit"
               size="icon"
               className="absolute right-2 top-1/4 -translate-y-1/2 transition-all duration-300"
+              onClick={handleSubmit}
             >
               <ArrowRight className="transition-transform duration-300" />
             </Button>
