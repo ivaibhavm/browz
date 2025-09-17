@@ -14,7 +14,6 @@ export interface Step {
     status: 'pending' | 'in-progress' | 'completed';
     code?: string;
     path?: string;
-    completed?: boolean;
 }
 
 export interface FileItem {
