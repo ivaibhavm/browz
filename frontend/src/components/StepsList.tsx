@@ -1,13 +1,7 @@
 import React from 'react';
 import { CheckCircle, Circle } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-interface Step {
-  id: number;
-  title: string;
-  description: string;
-  completed: boolean;
-}
+import type { Step } from '@/types';
 
 interface StepsListProps {
   steps: Step[];
@@ -25,7 +19,6 @@ const StepsList: React.FC<StepsListProps> = ({
   return (
     <div className={cn("p-4", className)}>     
       <div className="space-y-3">
-        
         {steps.map((step) => (
           <div 
             key={step.id}
