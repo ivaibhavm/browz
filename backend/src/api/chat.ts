@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk"
 import 'dotenv/config';
 import express from "express"
 import { getSystemPrompt } from "../prompts"
+import { TextBlock } from "@anthropic-ai/sdk/resources";
 
 const anthropic = new Anthropic({})
 
@@ -16,6 +17,10 @@ router.post("/", async (req, res) => {
         system: getSystemPrompt(),
         messages: messages,
     })
+    res.json({
+        response: (response.content[0] as TextBlock)?.text
+    });
+    console.log("*****************************chat.ts response*************************")
     console.log(response)
 })
 
