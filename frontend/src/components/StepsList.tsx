@@ -19,6 +19,7 @@ const StepsList: React.FC<StepsListProps> = ({
   return (
     <div className={cn("p-4", className)}>     
       <div className="space-y-3">
+        <h1 className='text-white p-1'>Project files</h1>
         {steps.map((step) => (
           <div 
             key={step.id}
@@ -32,7 +33,7 @@ const StepsList: React.FC<StepsListProps> = ({
           >
             <div className="flex items-start gap-3">
               <div className="mt-0.5 text-primary flex-shrink-0">
-                {step.completed ? (
+                {step.status=='completed' ? (
                   <CheckCircle size={18} className="text-primary" />
                 ) : (
                   <Circle size={18} className="text-zinc-400" />
@@ -41,7 +42,7 @@ const StepsList: React.FC<StepsListProps> = ({
               <div>
                 <h3 className={cn(
                   "font-medium mb-1 text-sm", 
-                  step.completed ? "text-zinc-300" : "text-white"
+                  step.status=='completed' ? "text-zinc-300" : "text-white"
                 )}>
                   {step.title}
                 </h3>

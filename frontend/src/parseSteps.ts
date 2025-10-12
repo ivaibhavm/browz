@@ -11,17 +11,6 @@ export function parseSteps(response: string): Step[] {
     const steps: Step[] = [];
     let stepId = 1;
   
-    const titleMatch = response.match(/title="([^"]*)"/);
-    const artifactTitle = titleMatch ? titleMatch[1] : 'Project Files';
-  
-    steps.push({
-      id: stepId++,
-      title: artifactTitle,
-      description: '',
-      type: StepType.CreateFolder,
-      status: 'pending'
-    });
-  
     const actionRegex = /<Action\s+type="([^"]*)"(?:\s+filePath="([^"]*)")?>([\s\S]*?)<\/Action>/g;
     
     let match;
