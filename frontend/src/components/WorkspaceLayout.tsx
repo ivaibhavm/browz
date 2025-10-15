@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, Children } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { Link, useLocation } from 'react-router-dom';
 import StepsList from './StepsList';

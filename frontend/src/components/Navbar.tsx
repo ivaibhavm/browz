@@ -1,8 +1,8 @@
-"use client";
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Link } from 'react-router-dom';
+import AuthForm from './AuthForm';
+import { Card } from './ui/card';
 
 const AnimatedNavLink = ({ href, children }: { href: string; children: React.ReactNode }) => {
   const defaultTextColor = 'text-gray-300';
@@ -21,11 +21,27 @@ const AnimatedNavLink = ({ href, children }: { href: string; children: React.Rea
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authType, setAuthType] = useState<'login' | 'signup'>('login');
   const [headerShapeClass, setHeaderShapeClass] = useState('rounded-full');
   const shapeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleLogin = () => {
+    setAuthType('login');
+    setShowAuthModal(true);
+  };
+
+  const handleSignup = () => {
+    setAuthType('signup');
+    setShowAuthModal(true);
+  };
+
+  const handleCloseAuthModal = () => {
+    setShowAuthModal(false);
   };
 
   useEffect(() => {
@@ -62,6 +78,7 @@ export function Navbar() {
   ];
 
   return (
+    <>
     <header className={`fixed top-6 left-1/2 transform -translate-x-1/2 z-20 flex flex-col items-center pl-6 pr-6 py-3 backdrop-blur-sm ${headerShapeClass} border border-[#333] bg-indigo-500/6 w-[calc(100%-2rem)] md:w-[800px] transition-[border-radius] duration-0 ease-in-out`}>
 
       <div className="flex items-center justify-between w-full gap-x-6 sm:gap-x-8">
@@ -78,8 +95,8 @@ export function Navbar() {
         </nav>
 
         <div className="hidden sm:flex items-center gap-2 sm:gap-3">
-            <Button className='bg-white text-black hover:bg-slate-100'> Login </Button>
-            <Button className='bg-white text-black hover:bg-slate-100'> Signup </Button>
+            <Button className='bg-white text-black hover:bg-slate-100' onClick={handleLogin}> Login </Button>
+            <Button className='bg-white text-black hover:bg-slate-100' onClick={handleSignup}> Signup </Button>
         </div>
 
         <button className="sm:hidden flex items-center justify-center w-8 h-8 text-gray-300 focus:outline-none" onClick={toggleMenu} aria-label={isOpen ? 'Close Menu' : 'Open Menu'}>
@@ -101,10 +118,20 @@ export function Navbar() {
           ))}
         </nav>
         <div className="flex flex-col items-center space-y-4 mt-4 w-full">
-          <Button className='bg-white text-black hover:bg-slate-100'> Login </Button>
-          <Button className='bg-white text-black hover:bg-slate-100'> Signup </Button>
+          <Button className='bg-white text-black hover:bg-slate-100' onClick={handleLogin}> Login </Button>
+          <Button className='bg-white text-black hover:bg-slate-100' onClick={handleSignup}> Signup </Button>
         </div>
       </div>
     </header>
+    {/* Auth Modal */}
+    {showAuthModal && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-md" onClick={handleCloseAuthModal}>
+        <Card className="max-w-md w-full mx-4 relative bg-[#191919] border border-[#333] shadow-lg backdrop-blur-none" onClick={e => e.stopPropagation()}>
+          <AuthForm type={authType} onToggleType={() => setAuthType(prev => prev === 'login' ? 'signup' : 'login')} />
+        </Card>
+      </div>
+    )}
+    </>
   );
 }
+
