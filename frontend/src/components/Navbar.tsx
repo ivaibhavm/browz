@@ -21,7 +21,7 @@ const AnimatedNavLink = ({ href, children }: { href: string; children: React.Rea
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showAuthForm, setShowAuthForm] = useState(false);
   const [authType, setAuthType] = useState<'login' | 'signup'>('login');
   const [headerShapeClass, setHeaderShapeClass] = useState('rounded-full');
   const shapeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -32,16 +32,16 @@ export function Navbar() {
 
   const handleLogin = () => {
     setAuthType('login');
-    setShowAuthModal(true);
+    setShowAuthForm(true);
   };
 
   const handleSignup = () => {
     setAuthType('signup');
-    setShowAuthModal(true);
+    setShowAuthForm(true);
   };
 
-  const handleCloseAuthModal = () => {
-    setShowAuthModal(false);
+  const handleCloseAuthForm = () => {
+    setShowAuthForm(false);
   };
 
   useEffect(() => {
@@ -123,9 +123,9 @@ export function Navbar() {
         </div>
       </div>
     </header>
-    {/* Auth Modal */}
-    {showAuthModal && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-md" onClick={handleCloseAuthModal}>
+    {/* Auth Form */}
+    {showAuthForm && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-md" onClick={handleCloseAuthForm}>
         <Card className="max-w-md w-full mx-4 relative bg-[#191919] border border-[#333] shadow-lg backdrop-blur-none" onClick={e => e.stopPropagation()}>
           <AuthForm type={authType} onToggleType={() => setAuthType(prev => prev === 'login' ? 'signup' : 'login')} />
         </Card>

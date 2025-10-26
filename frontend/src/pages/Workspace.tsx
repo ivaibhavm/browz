@@ -16,11 +16,14 @@ const Workspace: React.FC = () => {
     }
     
     // Simulate loading
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+    // const timer = setTimeout(() => {
+    //   setIsLoading(false);
+    // }, 1000);
     
-    return () => clearTimeout(timer);
+    // return () => clearTimeout(timer);
+
+    setIsLoading(false);
+
   }, [navigate, prompt]);
   
   if (isLoading) {

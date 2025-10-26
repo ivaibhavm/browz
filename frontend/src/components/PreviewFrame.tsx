@@ -33,7 +33,14 @@ const PreviewFrame = ( {webContainer} : PreviewFrameProps) => {
     
     return (
         <>
-            {url? <iframe className="w-full h-full" src={url} /> : <h2 className="text-white flex justify-center items-center h-full bg-red">Loading Preview....</h2>}
+            {
+                url? <iframe className="w-full h-full" src={url} /> 
+                    : 
+                <h2 className="text-white flex justify-center items-center h-full">
+                    <div className="w-4 h-4 mt-4 mr-2 border-2 border-primary border-t-transparent rounded-full animate-spin mb-4" />
+                    Loading Preview
+                </h2>
+            }
         </>
     )
 }

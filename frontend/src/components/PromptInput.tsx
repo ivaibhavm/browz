@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import AuthForm from './AuthForm';
 
 interface PromptInputProps {
   className?: string;
@@ -32,6 +33,8 @@ const PromptInput: React.FC<PromptInputProps> = ({ className }) => {
   const [isFocused, setIsFocused] = useState(false);
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
+  const [showAuthForm, setShowAuthForm] = useState(false);
+  const [authType, setAuthType] = useState<'login' | 'signup'>('login');
 
   const staticPrefix = "Create a ";
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
@@ -93,18 +96,26 @@ const PromptInput: React.FC<PromptInputProps> = ({ className }) => {
     }
     return () => clearTimeout(typingTimeout);
   }, [animatedText, isDeleting, placeholderIndex]);
+
+  const user =  true
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if(!user){
+      console.log('YOU NEED TO LOGIN FIRST')
+      setShowAuthForm(true)
+      return
+    }
     
     if (!prompt.trim()) return;
     
     setIsSubmitting(true);
     
-    // Simulating a brief loading state before navigation
-    setTimeout(() => {
-      navigate('/workspace' , { state : {prompt} });
-    }, 600);
+    navigate('/workspace' , { state : {prompt} });
+  };
+
+  const handleCloseAuthForm = () => {
+    setShowAuthForm(false);
   };
   
   return (
@@ -146,6 +157,13 @@ const PromptInput: React.FC<PromptInputProps> = ({ className }) => {
           ) : null }
         </form>
       </Card>
+      {showAuthForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-md" onClick={handleCloseAuthForm}>
+          <Card className="max-w-md w-full mx-4 relative bg-[#191919] border border-[#333] shadow-lg backdrop-blur-none" onClick={e => e.stopPropagation()}>
+            <AuthForm type={authType} onToggleType={() => setAuthType(prev => prev === 'login' ? 'signup' : 'login')} />
+          </Card>
+        </div>
+      )}
       
     </div>
   );
