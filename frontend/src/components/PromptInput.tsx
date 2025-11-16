@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AuthForm from './AuthForm';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface PromptInputProps {
   className?: string;
@@ -35,6 +36,7 @@ const PromptInput: React.FC<PromptInputProps> = ({ className }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [showAuthForm, setShowAuthForm] = useState(false);
   const [authType, setAuthType] = useState<'login' | 'signup'>('login');
+  const { user, refreshUser } = useAuth();
 
   const staticPrefix = "Create a ";
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
@@ -96,13 +98,10 @@ const PromptInput: React.FC<PromptInputProps> = ({ className }) => {
     }
     return () => clearTimeout(typingTimeout);
   }, [animatedText, isDeleting, placeholderIndex]);
-
-  const user =  true
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if(!user){
-      console.log('YOU NEED TO LOGIN FIRST')
       setShowAuthForm(true)
       return
     }
@@ -158,9 +157,9 @@ const PromptInput: React.FC<PromptInputProps> = ({ className }) => {
         </form>
       </Card>
       {showAuthForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-md" onClick={handleCloseAuthForm}>
-          <Card className="max-w-md w-full mx-4 relative bg-[#191919] border border-[#333] shadow-lg backdrop-blur-none" onClick={e => e.stopPropagation()}>
-            <AuthForm type={authType} onToggleType={() => setAuthType(prev => prev === 'login' ? 'signup' : 'login')} />
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-md" onClick={handleCloseAuthForm}>
+          <Card className="max-w-md w-full mx-4 relative bg-[#191919] border border-[#333] shadow-lg backdrop-blur-none z-[101]" onClick={e => e.stopPropagation()}>
+            <AuthForm type={authType} onToggleType={() => setAuthType(prev => prev === 'login' ? 'signup' : 'login')} onSuccess={() => {setShowAuthForm(false); refreshUser(); }}/>
           </Card>
         </div>
       )}

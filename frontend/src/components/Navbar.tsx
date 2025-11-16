@@ -3,17 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Link } from 'react-router-dom';
 import AuthForm from './AuthForm';
 import { Card } from './ui/card';
+import { User } from 'lucide-react'
+import { useAuth } from '@/contexts/AuthContext';
 
 const AnimatedNavLink = ({ href, children }: { href: string; children: React.ReactNode }) => {
-  const defaultTextColor = 'text-gray-300';
-  const hoverTextColor = 'text-white';
-  const textSizeClass = 'text-sm';
-
   return (
-    <a href={href} className={`group relative overflow-hidden h-5 inline-flex items-start ${textSizeClass}`}>
+    <a href={href} className='group relative overflow-hidden h-5 inline-flex items-start text-sm'>
       <div className="flex flex-col transition-transform duration-400 ease-out transform group-hover:-translate-y-1/2">
-        <span className={defaultTextColor}>{children}</span>
-        <span className={hoverTextColor}>{children}</span>
+        <span className='text-gray-300'>{children}</span>
+        <span className='text-white'>{children}</span>
       </div>
     </a>
   );
@@ -25,6 +23,7 @@ export function Navbar() {
   const [authType, setAuthType] = useState<'login' | 'signup'>('login');
   const [headerShapeClass, setHeaderShapeClass] = useState('rounded-full');
   const shapeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const { user, refreshUser } = useAuth();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -43,7 +42,7 @@ export function Navbar() {
   const handleCloseAuthForm = () => {
     setShowAuthForm(false);
   };
-
+  
   useEffect(() => {
     if (shapeTimeoutRef.current) {
       clearTimeout(shapeTimeoutRef.current);
@@ -94,10 +93,16 @@ export function Navbar() {
           ))}
         </nav>
 
-        <div className="hidden sm:flex items-center gap-2 sm:gap-3">
-            <Button className='bg-white text-black hover:bg-slate-100' onClick={handleLogin}> Login </Button>
-            <Button className='bg-white text-black hover:bg-slate-100' onClick={handleSignup}> Signup </Button>
-        </div>
+        {user ? 
+            <div>
+                <User className='text-gray-300' />
+            </div>
+          :
+            <div className="hidden sm:flex items-center gap-2 sm:gap-3">
+                <Button className='bg-white text-black hover:bg-slate-100' onClick={handleLogin}> Login </Button>
+                <Button className='bg-white text-black hover:bg-slate-100' onClick={handleSignup}> Signup </Button>
+            </div>
+        }
 
         <button className="sm:hidden flex items-center justify-center w-8 h-8 text-gray-300 focus:outline-none" onClick={toggleMenu} aria-label={isOpen ? 'Close Menu' : 'Open Menu'}>
           {isOpen ? (
@@ -117,17 +122,13 @@ export function Navbar() {
             </a>
           ))}
         </nav>
-        <div className="flex flex-col items-center space-y-4 mt-4 w-full">
-          <Button className='bg-white text-black hover:bg-slate-100' onClick={handleLogin}> Login </Button>
-          <Button className='bg-white text-black hover:bg-slate-100' onClick={handleSignup}> Signup </Button>
-        </div>
       </div>
     </header>
     {/* Auth Form */}
     {showAuthForm && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-md" onClick={handleCloseAuthForm}>
-        <Card className="max-w-md w-full mx-4 relative bg-[#191919] border border-[#333] shadow-lg backdrop-blur-none" onClick={e => e.stopPropagation()}>
-          <AuthForm type={authType} onToggleType={() => setAuthType(prev => prev === 'login' ? 'signup' : 'login')} />
+      <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-md" onClick={handleCloseAuthForm}>
+        <Card className="max-w-md w-full mx-4 relative bg-[#191919] border border-[#333] shadow-lg backdrop-blur-none z-[101]" onClick={e => e.stopPropagation()}>
+          <AuthForm type={authType} onToggleType={() => setAuthType(prev => prev === 'login' ? 'signup' : 'login')} onSuccess={() => {setShowAuthForm(false); refreshUser(); }}/>
         </Card>
       </div>
     )}

@@ -1,13 +1,19 @@
 import { CardContent, CardFooter } from "./ui/card";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import { useState } from "react";
+import api from "@/api";
 
 type Props = {
   type: "login" | "signup";
   onToggleType?: () => void;
+  onSuccess?: () => void;
 };
 
-function AuthForm({ type, onToggleType }: Props) {
+function AuthForm({ type, onToggleType, onSuccess }: Props) {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
   const isLoginForm = type === "login";
 
   const handleGoogleOnboarding = async () => {
@@ -18,11 +24,20 @@ function AuthForm({ type, onToggleType }: Props) {
     }
   };
 
-  const handleOnboarding = () => {
-    if(isLoginForm){
-      console.log('login')
-    } else {
-      console.log('sign up')
+  const handleOnboarding = async () => {
+    setIsLoading(true);
+    try {
+      const endpoint = isLoginForm ? "login" : "signup";
+      const res = await api.post(`/auth/${endpoint}`, {
+        email,
+        password,
+      });
+
+      if (res) onSuccess?.();
+    } catch (err) {
+      console.error("Auth failed:", err);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -38,6 +53,8 @@ function AuthForm({ type, onToggleType }: Props) {
             type="email"
             className="p-2 text-white placeholder:text-zinc-500 text-base rounded-md border border-white/10 focus:outline-none focus:ring-0"
             required
+            disabled={isLoading}
+            onChange={(e) => {setEmail(e.target.value)}}
           />
         </div>
         <div className="flex flex-col space-y-1.5">
@@ -49,12 +66,21 @@ function AuthForm({ type, onToggleType }: Props) {
             type="password"
             className="p-2 text-gray-200 placeholder:text-zinc-500 text-base rounded-md border border-white/10 focus:outline-none focus:ring-0"
             required
+            disabled={isLoading}
+            onChange={(e) => {setPassword(e.target.value)}}
           />
         </div>
       </CardContent>
       <CardFooter className="mt-4 flex flex-col gap-6">
-        <Button className="w-full" onClick={handleOnboarding}>
-          {isLoginForm ? "Login" : "Sign Up"}
+        <Button className="w-full" onClick={handleOnboarding} disabled={isLoading}>
+          {isLoading ? (
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <span>Loading...</span>
+            </div>
+          ) : (
+            isLoginForm ? "Login" : "Sign Up"
+          )}
         </Button>
         
         <div className="w-full">
@@ -72,6 +98,7 @@ function AuthForm({ type, onToggleType }: Props) {
             variant="outline" 
             className="w-full flex items-center justify-center gap-2"
             onClick={handleGoogleOnboarding}
+            disabled={isLoading}
           >
            <>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="20px" height="20px">
