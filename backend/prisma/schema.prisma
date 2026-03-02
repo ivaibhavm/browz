@@ -16,6 +16,7 @@ datasource db {
 model User {
   id           String    @id @default(uuid())
   email        String    @unique
+  name         String
   passwordHash String
   AttemptsLeft Int       @default(2)
   createdAt    DateTime  @default(now())
