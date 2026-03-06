@@ -49,17 +49,15 @@ router.post("/login", (async (req, res) => {
 
   try {
     const user = await prisma.user.findUnique({ where: { email } })
-    if (!user) return res.status(401).json({ error: "Invalid credentials" })
+    if (!user) return res.status(401).json({ error: "Invalid email" })
 
     const ok = await bcrypt.compare(password, user.passwordHash)
-    if (!ok) return res.status(401).json({ error: "Invalid credentials" })
+    if (!ok) return res.status(401).json({ error: "Incorrect password" })
 
     const token = jwt.sign(
       { id: user.id, email: user.email },
       process.env.JWT_SECRET!,
     );
-
-    console.log("token: " + token)
 
     res.cookie("token", token, {
       httpOnly: true,

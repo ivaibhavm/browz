@@ -1,7 +1,8 @@
 import { CardContent, CardFooter } from "./ui/card";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import api from "@/api";
 
 type Props = {
@@ -15,7 +16,12 @@ function AuthForm({ type, onToggleType, onSuccess }: Props) {
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [errorMsg, setErrorMsg] = useState('')
   const isLoginForm = type === "login";
+
+  useEffect(() => {
+    setErrorMsg('');
+  }, [type]);
 
   const handleGoogleOnboarding = async () => {
     if (isLoginForm) {
@@ -27,6 +33,7 @@ function AuthForm({ type, onToggleType, onSuccess }: Props) {
 
   const handleOnboarding = async () => {
     setIsLoading(true);
+    setErrorMsg('');
     try {
       const endpoint = isLoginForm ? "login" : "signup";
       const res = await api.post(`/auth/${endpoint}`, {
@@ -38,6 +45,11 @@ function AuthForm({ type, onToggleType, onSuccess }: Props) {
       if (res) onSuccess?.();
     } catch (err) {
       console.error("Auth failed:", err);
+      if (axios.isAxiosError(err) && err.response?.data?.error) {
+        setErrorMsg(err.response.data.error);
+      } else {
+        setErrorMsg("Something went wrong. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -85,8 +97,13 @@ function AuthForm({ type, onToggleType, onSuccess }: Props) {
             onChange={(e) => { setPassword(e.target.value) }}
           />
         </div>
+        {errorMsg ? (
+          <div className="flex items-center justify-center text-red-500 bg-red-500/10 border border-red-500/20 px-3 py-2 rounded-md text-sm font-medium text-center">
+            {errorMsg}
+          </div>
+        ) : null}
       </CardContent>
-      <CardFooter className="mt-4 flex flex-col gap-6">
+      <CardFooter className="mt-2 flex flex-col gap-6">
         <Button className="w-full" onClick={handleOnboarding} disabled={isLoading}>
           {isLoading ? (
             <div className="flex items-center justify-center gap-2">
