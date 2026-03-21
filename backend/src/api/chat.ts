@@ -1,24 +1,31 @@
-import Anthropic from "@anthropic-ai/sdk"
+import { GoogleGenAI } from "@google/genai";
 import 'dotenv/config';
 import express from "express"
 import { getSystemPrompt } from "../prompts"
-import { TextBlock } from "@anthropic-ai/sdk/resources";
 
-const anthropic = new Anthropic({})
+const ai = new GoogleGenAI({});
 
 const router = express.Router()
 router.use(express.json())
 
 router.post("/", async (req, res) => {
-    const messages = req.body.messages
-    const response = await anthropic.messages.create({
-        model: "claude-3-haiku-20240307",
-        max_tokens: 4096,
-        system: getSystemPrompt(),
-        messages: messages,
-    })
+    const messages: any[] = req.body.messages
+    const contents = messages.map(msg => ({
+        role: msg.role === "assistant" ? "model" : "user",
+        parts: [{ text: msg.content }]
+    }));
+    const response = await ai.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents: contents,
+        config: {
+            systemInstruction: {
+                role: "system",
+                parts: [{ text: getSystemPrompt() }]
+            }
+        }
+    });
     res.json({
-        response: (response.content[0] as TextBlock)?.text
+        response: response.text
     });
     console.log("*****************************chat.ts response*************************")
     console.log(response)
