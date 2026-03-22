@@ -27,8 +27,6 @@ router.post("/", async (req, res) => {
     res.json({
         response: response.text
     });
-    console.log("*****************************chat.ts response*************************")
-    console.log(response)
 })
 
 export default router
