@@ -3,8 +3,7 @@ import { cn } from '@/lib/utils';
 import { Link, useLocation } from 'react-router-dom';
 import StepsList from './StepsList';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BACKEND_URL } from '@/config';
-import axios from 'axios';
+import api from '@/api';
 import { parseSteps } from '@/parseSteps';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
@@ -33,34 +32,30 @@ const WorkspaceLayout = () => {
   const [previewStatus, setPreviewStatus] = useState<'idle' | 'installing' | 'starting' | 'ready' | 'error'>('idle');
 
   async function init() {
-    // const templateResponse = `<Artifact id=\"project-import\" title=\"Project Files\"><Action type=\"file\" filePath=\"src/App.tsx\">import React from 'react';\n\nfunction App() {\n  return (\n    <div className=\"min-h-screen bg-gray-100 flex items-center justify-center\">\n      <p>Start prompting (or editing) to see magic happen :)</p>\n    </div>\n  );\n}\n\nexport default App;\n</Action><Action type=\"file\" filePath=\"src/index.css\">@tailwind base;\n@tailwind components;\n@tailwind utilities;\n</Action><Action type=\"file\" filePath=\"src/main.tsx\">import { StrictMode } from 'react';\nimport { createRoot } from 'react-dom/client';\nimport App from './App.tsx';\nimport './index.css';\n\ncreateRoot(document.getElementById('root')!).render(\n  <StrictMode>\n    <App />\n  </StrictMode>\n);\n</Action><Action type=\"file\" filePath=\"src/vite-env.d.ts\">/// <reference types=\"vite/client\" />\n</Action><Action type=\"file\" filePath=\"eslint.config.js\">import js from '@eslint/js';\nimport globals from 'globals';\nimport reactHooks from 'eslint-plugin-react-hooks';\nimport reactRefresh from 'eslint-plugin-react-refresh';\nimport tseslint from 'typescript-eslint';\n\nexport default tseslint.config(\n  { ignores: ['dist'] },\n  {\n    extends: [js.configs.recommended, ...tseslint.configs.recommended],\n    files: ['**/*.{ts,tsx}'],\n    languageOptions: {\n      ecmaVersion: 2020,\n      globals: globals.browser,\n    },\n    plugins: {\n      'react-hooks': reactHooks,\n      'react-refresh': reactRefresh,\n    },\n    rules: {\n      ...reactHooks.configs.recommended.rules,\n      'react-refresh/only-export-components': [\n        'warn',\n        { allowConstantExport: true },\n      ],\n    },\n  }\n);\n</Action><Action type=\"file\" filePath=\"index.html\"><!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <link rel=\"icon\" type=\"image/svg+xml\" href=\"/vite.svg\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Vite + React + TS</title>\n  </head>\n  <body>\n    <div id=\"root\"></div>\n    <script type=\"module\" src=\"/src/main.tsx\"></script>\n  </body>\n</html>\n</Action><Action type=\"file\" filePath=\"package.json\">{\n  \"name\": \"vite-react-typescript-starter\",\n  \"private\": true,\n  \"version\": \"0.0.0\",\n  \"type\": \"module\",\n  \"scripts\": {\n    \"dev\": \"vite\",\n    \"build\": \"vite build\",\n    \"lint\": \"eslint .\",\n    \"preview\": \"vite preview\"\n  },\n  \"dependencies\": {\n    \"lucide-react\": \"^0.344.0\",\n    \"react\": \"^18.3.1\",\n    \"react-dom\": \"^18.3.1\"\n  },\n  \"devDependencies\": {\n    \"@eslint/js\": \"^9.9.1\",\n    \"@types/react\": \"^18.3.5\",\n    \"@types/react-dom\": \"^18.3.0\",\n    \"@vitejs/plugin-react\": \"^4.3.1\",\n    \"autoprefixer\": \"^10.4.18\",\n    \"eslint\": \"^9.9.1\",\n    \"eslint-plugin-react-hooks\": \"^5.1.0-rc.0\",\n    \"eslint-plugin-react-refresh\": \"^0.4.11\",\n    \"globals\": \"^15.9.0\",\n    \"postcss\": \"^8.4.35\",\n    \"tailwindcss\": \"^3.4.1\",\n    \"typescript\": \"^5.5.3\",\n    \"typescript-eslint\": \"^8.3.0\",\n    \"vite\": \"^5.4.2\"\n  }\n}\n</Action><Action type=\"file\" filePath=\"postcss.config.js\">export default {\n  plugins: {\n    tailwindcss: {},\n    autoprefixer: {},\n  },\n};\n</Action><Action type=\"file\" filePath=\"tailwind.config.js\">/** @type {import('tailwindcss').Config} */\nexport default {\n  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],\n  theme: {\n    extend: {},\n  },\n  plugins: [],\n};\n</Action><Action type=\"file\" filePath=\"tsconfig.app.json\">{\n  \"compilerOptions\": {\n    \"target\": \"ES2020\",\n    \"useDefineForClassFields\": true,\n    \"lib\": [\"ES2020\", \"DOM\", \"DOM.Iterable\"],\n    \"module\": \"ESNext\",\n    \"skipLibCheck\": true,\n\n    /* Bundler mode */\n    \"moduleResolution\": \"bundler\",\n    \"allowImportingTsExtensions\": true,\n    \"isolatedModules\": true,\n    \"moduleDetection\": \"force\",\n    \"noEmit\": true,\n    \"jsx\": \"react-jsx\",\n\n    /* Linting */\n    \"strict\": true,\n    \"noUnusedLocals\": true,\n    \"noUnusedParameters\": true,\n    \"noFallthroughCasesInSwitch\": true\n  },\n  \"include\": [\"src\"]\n}\n</Action><Action type=\"file\" filePath=\"tsconfig.json\">{\n  \"files\": [],\n  \"references\": [\n    { \"path\": \"./tsconfig.app.json\" },\n    { \"path\": \"./tsconfig.node.json\" }\n  ]\n}\n</Action><Action type=\"file\" filePath=\"tsconfig.node.json\">{\n  \"compilerOptions\": {\n    \"target\": \"ES2022\",\n    \"lib\": [\"ES2023\"],\n    \"module\": \"ESNext\",\n    \"skipLibCheck\": true,\n\n    /* Bundler mode */\n    \"moduleResolution\": \"bundler\",\n    \"allowImportingTsExtensions\": true,\n    \"isolatedModules\": true,\n    \"moduleDetection\": \"force\",\n    \"noEmit\": true,\n\n    /* Linting */\n    \"strict\": true,\n    \"noUnusedLocals\": true,\n    \"noUnusedParameters\": true,\n    \"noFallthroughCasesInSwitch\": true\n  },\n  \"include\": [\"vite.config.ts\"]\n}\n</Action><Action type=\"file\" filePath=\"vite.config.ts\">import { defineConfig } from 'vite';\nimport react from '@vitejs/plugin-react';\n\n// https://vitejs.dev/config/\nexport default defineConfig({\n  plugins: [react()],\n  optimizeDeps: {\n    exclude: ['lucide-react'],\n  },\n});\n</Action></Artifact>`
-    // setSteps(parseSteps(templateResponse))
+    try {
+      const templateResponse = await api.post('/api/template', {
+        prompt: prompt
+      });
 
-    // const stepsResponse = `<Artifact id=\"note-taking-app\" title=\"React Typescript Note Taking App\">\n  <Action type=\"file\" filePath=\"package.json\">\n    {\n      \"name\": \"note-taking-app\",\n      \"version\": \"0.1.0\",\n      \"private\": true,\n      \"dependencies\": {\n        \"@heroicons/react\": \"^2.0.16\",\n        \"@types/node\": \"^18.14.6\",\n        \"@types/react\": \"^18.0.28\",\n        \"@types/react-dom\": \"^18.0.11\",\n        \"react\": \"^18.2.0\",\n        \"react-dom\": \"^18.2.0\",\n        \"react-scripts\": \"5.0.1\",\n        \"tailwindcss\": \"^3.2.7\",\n        \"typescript\": \"^4.9.5\"\n      },\n      \"scripts\": {\n        \"start\": \"react-scripts start\",\n        \"build\": \"react-scripts build\",\n        \"test\": \"react-scripts test\",\n        \"eject\": \"react-scripts eject\"\n      },\n      \"eslintConfig\": {\n        \"extends\": [\n          \"react-app\",\n          \"react-app/jest\"\n        ]\n      },\n      \"browserslist\": {\n        \"production\": [\n          \">0.2%\",\n          \"not dead\",\n          \"not op_mini all\"\n        ],\n        \"development\": [\n          \"last 1 chrome version\",\n          \"last 1 firefox version\",\n          \"last 1 safari version\"\n        ]\n      }\n    }\n  </Action>\n\n  <Action type=\"shell\">\n    npm install\n  </Action>\n\n  <Action type=\"file\" filePath=\"src/index.css\">\n    @tailwind base;\n    @tailwind components;\n    @tailwind utilities;\n  </Action>\n\n  <Action type=\"file\" filePath=\"src/index.tsx\">\n    import React from 'react';\n    import ReactDOM from 'react-dom/client';\n    import App from './App';\n    import './index.css';\n\n    const root = ReactDOM.createRoot(\n      document.getElementById('root') as HTMLElement\n    );\n    root.render(\n      <React.StrictMode>\n        <App />\n      </React.StrictMode>\n    );\n  </Action>\n\n  <Action type=\"file\" filePath=\"src/App.tsx\">\n    import React, { useState, useEffect } from 'react';\n    import { PlusIcon, TrashIcon } from '@heroicons/react/24/solid';\n\n    interface Note {\n      id: string;\n      title: string;\n      content: string;\n    }\n\n    function App() {\n      const [notes, setNotes] = useState<Note[]>([]);\n      const [newNote, setNewNote] = useState<Note>({ id: '', title: '', content: '' });\n\n      useEffect(() => {\n        // Load notes from local storage on initial render\n        const storedNotes = localStorage.getItem('notes');\n        if (storedNotes) {\n          setNotes(JSON.parse(storedNotes));\n        }\n      }, []);\n\n      useEffect(() => {\n        // Save notes to local storage whenever the notes array changes\n        localStorage.setItem('notes', JSON.stringify(notes));\n      }, [notes]);\n\n      const handleAddNote = () => {\n        if (newNote.title.trim() !== '') {\n          setNotes([...notes, { ...newNote, id: crypto.randomUUID() }]);\n          setNewNote({ id: '', title: '', content: '' });\n        }\n      };\n\n      const handleDeleteNote = (id: string) => {\n        setNotes(notes.filter((note) => note.id !== id));\n      };\n\n      return (\n        <div className=\"min-h-screen bg-gray-100 flex flex-col items-center justify-center\">\n          <div className=\"w-full max-w-md bg-white shadow-lg rounded-lg p-8\">\n            <h1 className=\"text-2xl font-bold mb-4\">Note Taking App</h1>\n            <div className=\"mb-4\">\n              <input\n                type=\"text\"\n                placeholder=\"Note title\"\n                value={newNote.title}\n                onChange={(e) => setNewNote({ ...newNote, title: e.target.value })}\n                className=\"w-full border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"\n              />\n            </div>\n            <div className=\"mb-4\">\n              <textarea\n                placeholder=\"Note content\"\n                value={newNote.content}\n                onChange={(e) => setNewNote({ ...newNote, content: e.target.value })}\n                className=\"w-full border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"\n              ></textarea>\n            </div>\n            <button\n              onClick={handleAddNote}\n              className=\"bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500\"\n            >\n              <PlusIcon className=\"h-5 w-5 inline-block mr-2\" /> Add Note\n            </button>\n            <div className=\"mt-8\">\n              {notes.map((note) => (\n                <div\n                  key={note.id}\n                  className=\"bg-gray-200 rounded-md p-4 mb-4 flex justify-between items-center\"\n                >\n                  <div>\n                    <h3 className=\"font-bold\">{note.title}</h3>\n                    <p>{note.content}</p>\n                  </div>\n                  <button\n                    onClick={() => handleDeleteNote(note.id)}\n                    className=\"text-red-500 hover:text-red-600 focus:outline-none\"\n                  >\n                    <TrashIcon className=\"h-5 w-5\" />\n                  </button>\n                </div>\n              ))}\n            </div>\n          </div>\n        </div>\n      );\n    }\n\n    export default App;\n  </Action>\n\n  <Action type=\"shell\">\n    npm start\n  </Action>\n</Artifact>`
-    // setSteps(s => [...s, ...parseSteps(stepsResponse).map(x => ({
-    //   ...x,
-    //   status: "pending" as const
-    // }))])
+      const { prompts } = templateResponse.data;
 
-    const templateResponse = await axios.post(`${BACKEND_URL}/api/template`, {
-      prompt: prompt
-    });
+      setSteps(parseSteps(templateResponse.data.uiPrompts))
 
-    const { prompts } = templateResponse.data;
+      const stepsResponse = await api.post('/api/chat', {
+        messages: [...prompts, prompt].map(content => ({
+          role: "user",
+          content
+        }))
+      })
 
-    setSteps(parseSteps(templateResponse.data.uiPrompts))
-
-    const stepsResponse = await axios.post(`${BACKEND_URL}/api/chat`, {
-      messages: [...prompts, prompt].map(content => ({
-        role: "user",
-        content
-      }))
-    })
-
-    setSteps(s => [...s, ...parseSteps(stepsResponse.data.response).map(x => ({
-      ...x,
-      status: "pending" as const
-    }))])
+      setSteps(s => [...s, ...parseSteps(stepsResponse.data.response).map(x => ({
+        ...x,
+        status: "pending" as const
+      }))])
+    } catch (err) {
+      console.error("init() failed:", err);
+      setPreviewStatus('error');
+    }
   }
   useEffect(() => {
     init();
