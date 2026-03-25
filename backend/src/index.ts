@@ -6,6 +6,7 @@ import cors from "cors"
 import cookieParser from "cookie-parser"
 
 const app = express()
+const PORT = process.env.PORT || 3000;
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -32,6 +33,8 @@ app.use('/api/template', templateRoute)
 app.use('/api/chat', chatRoute)
 app.use('/auth', authRoute)
 
-app.listen(3000, () => {
-    console.log("Server running on http://localhost:3000");
-  });
+app.set("trust proxy", 1);
+
+app.listen(PORT, () => {
+  console.log(`Server running on ${PORT}`);
+});
