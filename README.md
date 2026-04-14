@@ -6,8 +6,6 @@ Browz is an innovative web application that helps users create beautiful, functi
 
 - **AI-Powered Website Generation**: Create websites by describing your needs in natural language
 - **Real-time Preview**: See your changes instantly as you build
-- **Responsive Design**: Automatically generates mobile-friendly layouts
-- **Code Export**: Get clean, production-ready code for your website
 
 ## 🛠️ Getting Started
 
@@ -18,23 +16,44 @@ Browz is an innovative web application that helps users create beautiful, functi
 
 ### Installation
 
+This repository is structured into two main parts:
+
+- `frontend` – Client-side application  
+- `backend` – Server-side API  
+
+You need to install dependencies separately for each.
+
+
 1. Clone the repository:
-```bash
-git clone https://github.com/ivaibhavm/browz.git
-cd browz
-```
+
+    ```bash
+    git clone https://github.com/ivaibhavm/browz.git
+    cd browz
+    ```
+
+   #### frontend:
+    ```bash
+    cd frontend
+    ```
+
+    #### backend:
+    ```bash
+    cd backend
+    ```
 
 2. Install dependencies:
-```bash
-npm install
-```
+    ```bash
+    npm install
+    ```
 
 3. Start the development server:
-```bash
-npm run dev
-```
+    ```bash
+    npm run dev
+    ```
 
-4. Open [http://localhost:5173](http://localhost:5173) in your browser
+4. Open [http://localhost:5173](http://localhost:5173) in your browser for the frontend app
+
+5. The backend app will run on [http://localhost:3000](http://localhost:3000)
 
 ## 💡 Usage
 
