@@ -23,13 +23,13 @@ function AuthForm({ type, onToggleType, onSuccess }: Props) {
     setErrorMsg('');
   }, [type]);
 
-  const handleGoogleOnboarding = async () => {
-    if (isLoginForm) {
-      console.log('login with google')
-    } else {
-      console.log('sign up with google')
-    }
-  };
+  // const handleGoogleOnboarding = async () => {
+  //   if (isLoginForm) {
+  //     console.log('login with google')
+  //   } else {
+  //     console.log('sign up with google')
+  //   }
+  // };
 
   const handleOnboarding = async () => {
     setIsLoading(true);
@@ -115,7 +115,7 @@ function AuthForm({ type, onToggleType, onSuccess }: Props) {
           )}
         </Button>
 
-        <div className="w-full">
+        {/* <div className="w-full">
           <div className="relative my-4">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
@@ -142,7 +142,7 @@ function AuthForm({ type, onToggleType, onSuccess }: Props) {
               <span>{isLoginForm ? 'Login' : 'Sign up'} with Google</span>
             </>
           </Button>
-        </div>
+        </div> */}
 
         <p className="text-xs text-white">
           {isLoginForm
