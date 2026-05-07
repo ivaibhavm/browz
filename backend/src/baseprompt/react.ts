@@ -1,16 +1,4 @@
-export const reactBasePrompt = `<Artifact id=\"project-import\" title=\"Project Files\"><Action type=\"file\" filePath=\"index.html\"><!doctype html>
-<html lang=\"en\">
-  <head>
-    <meta charset=\"UTF-8\" />
-    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />
-    <title>Browz App</title>
-  </head>
-  <body>
-    <div id=\"root\"></div>
-    <script type=\"module\" src=\"/src/main.jsx\"></script>
-  </body>
-</html>
-</Action><Action type=\"file\" filePath=\"src/main.jsx\">import React from 'react';
+export const reactBasePrompt = `<Artifact id=\"project-import\" title=\"Project Files\"><Action type=\"file\" filePath=\"src/main.jsx\">import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.jsx';
 import './index.css';
@@ -32,6 +20,18 @@ createRoot(document.getElementById('root')).render(
 </Action><Action type=\"file\" filePath=\"src/index.css\">@tailwind base;
 @tailwind components;
 @tailwind utilities;
+</Action><Action type=\"file\" filePath=\"index.html\"><!doctype html>
+<html lang=\"en\">
+  <head>
+    <meta charset=\"UTF-8\" />
+    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />
+    <title>Browz App</title>
+  </head>
+  <body>
+    <div id=\"root\"></div>
+    <script type=\"module\" src=\"/src/main.jsx\"></script>
+  </body>
+</html>
 </Action><Action type=\"file\" filePath=\"tailwind.config.js\">/** @type {import('tailwindcss').Config} */
 export default {
   content: [

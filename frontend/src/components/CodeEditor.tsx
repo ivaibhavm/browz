@@ -7,6 +7,16 @@ interface CodeEditorProps {
 }
 
 export function CodeEditor({ file }: CodeEditorProps) {
+  function handleEditorWillMount(monaco) {
+    monaco.editor.defineTheme('dark', {
+      base: 'vs-dark',
+      inherit: true,
+      rules: [],
+      colors: {
+        'editor.background': '#101010',
+      },
+    })
+  }
   if (!file) {
     return (
       <div className="h-full flex justify-center items-center text-gray-400">
@@ -19,7 +29,8 @@ export function CodeEditor({ file }: CodeEditorProps) {
     <Editor
       height="100%"
       defaultLanguage="typescript"
-      theme="vs-dark"
+      theme="dark"
+      beforeMount={handleEditorWillMount}
       value={file.content || ''}
       options={{
         readOnly: true,
@@ -27,6 +38,7 @@ export function CodeEditor({ file }: CodeEditorProps) {
         fontSize: 14,
         wordWrap: 'on',
         scrollBeyondLastLine: false,
+        renderLineHighlight: 'none',
       }}
     />
   );

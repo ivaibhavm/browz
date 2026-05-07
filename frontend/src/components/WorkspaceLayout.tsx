@@ -7,7 +7,7 @@ import api from '@/api';
 import { parseSteps } from '@/parseSteps';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, File } from 'lucide-react';
 import { StepType, type FileItem, type Step } from '@/types';
 import FileExplorer from './FileExplorer';
 import { CodeEditor } from './CodeEditor';
@@ -266,7 +266,7 @@ const WorkspaceLayout = () => {
   }
 
   const handleSubmit = () => {
-
+    setShowPublishPopup(true);
   }
 
   const handleFileSelect = (file: FileItem) => {
@@ -281,7 +281,7 @@ const WorkspaceLayout = () => {
   };
 
   return (
-    <div className={cn("h-screen overflow-auto flex flex-col")}>
+    <div className={cn("h-screen overflow-hidden flex flex-col")}>
       {/* Header */}
       <header className="p-4 border-b border-white/10">
         <div className="flex justify-between items-center">
@@ -304,7 +304,7 @@ const WorkspaceLayout = () => {
         </div>
       ) : null}
 
-      <div className="flex-grow grid grid-cols-1 m-4 gap-4 md:grid-cols-[400px_1fr] xl:grid-cols-[400px_1fr] h-full overflow-hidden">
+      <div className="flex-1 min-h-0 grid grid-cols-1 m-4 gap-4 md:grid-cols-[400px_1fr] xl:grid-cols-[400px_1fr] overflow-hidden">
 
         <div className="workspace-column rounded-lg h-full flex flex-col overflow-hidden backdrop-blur-sm border border-[#333] bg-[#101010]">
           <StepsList
@@ -313,7 +313,7 @@ const WorkspaceLayout = () => {
             onStepClick={handleStepClick}
             className="flex-1 min-h-0 overflow-auto custom-scrollbar"
           />
-          <form onSubmit={handleSubmit} className="relative">
+          <form className="relative">
             <textarea
               ref={inputRef as any}
               style={{ height: '120px', width: '100%', resize: 'none' }}
@@ -334,8 +334,8 @@ const WorkspaceLayout = () => {
           </form>
         </div>
 
-        <div className="workspace-column rounded-lg backdrop-blur-sm  border border-[#333] bg-[#101010] flex-grow max-h-screen overflow-auto custom-scrollbar">
-          <div className={cn("flex flex-col h-full")}>
+        <div className="workspace-column rounded-lg backdrop-blur-sm border border-[#333] bg-[#101010] overflow-hidden min-h-0">
+          <div className={cn("flex flex-col h-full overflow-hidden")}>
             <Tabs
               value={activeTab}
               onValueChange={handleTabChange}
@@ -353,22 +353,30 @@ const WorkspaceLayout = () => {
                 </TabsList>
               </div>
 
-              <TabsContent value="preview" className="flex-grow m-0 p-0 h-full" forceMount style={{ display: activeTab === 'preview' ? undefined : 'none' }}>
+              <TabsContent value="preview" className="flex-1 min-h-0 m-0 p-0" forceMount style={{ display: activeTab === 'preview' ? undefined : 'none' }}>
                 <div className="h-full w-full overflow-auto">
                   <PreviewFrame url={previewUrl} status={previewStatus} />
                 </div>
               </TabsContent>
 
-              <TabsContent value="code" className="flex-grow m-0 p-0 h-full">
-                <div className="flex code-font h-full text-zinc-300 text-sm">
-                  <div className="w-1/4">
+              <TabsContent value="code" className="flex-1 min-h-0 m-0 p-0 overflow-hidden">
+                <div className="flex h-full text-zinc-300 text-sm overflow-hidden">
+                  <div className="w-1/4 min-h-0">
                     <FileExplorer
                       files={files}
                       onFileSelect={handleFileSelect}
                     />
                   </div>
-                  <div className='w-3/4'>
-                    <CodeEditor file={selectedFile} />
+                  <div className="border-l border-[#333]" />
+                  <div className='w-3/4 flex flex-col min-h-0 overflow-hidden'>
+                    <div className="flex-shrink-0">
+                      {selectedFile ? <h2 className="text-md px-7 my-4 flex items-center gap-2 text-gray-100">
+                        <File className="w-4 h-4 text-gray-400" />{selectedFile.name}
+                      </h2> : null}
+                      <div className="inset-x-0 w-full border-t border-[#333]"></div>
+
+                    </div>
+                    <div className='py-1 flex-1 min-h-0 overflow-hidden'><CodeEditor file={selectedFile} /></div>
                   </div>
                 </div>
               </TabsContent>
