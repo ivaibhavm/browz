@@ -15,12 +15,6 @@
     "@anthropic-ai/sdk": "^0.51.0",
     "@google/genai": "^1.46.0",
     "@prisma/client": "^6.18.0",
-    "@types/bcrypt": "^6.0.0",
-    "@types/connect-pg-simple": "^7.0.3",
-    "@types/cookie-parser": "^1.4.10",
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.2",
-    "@types/pg": "^8.15.5",
     "axios": "^1.9.0",
     "bcrypt": "^6.0.0",
     "connect-pg-simple": "^10.0.0",
@@ -29,13 +23,20 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-session": "^1.18.2",
-    "pg": "^8.16.3",
-    "typescript": "^5.7.3"
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.16.3"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/connect-pg-simple": "^7.0.3",
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.10",
-    "jsonwebtoken": "^9.0.2",
+    "@types/node": "^22.15.30",
+    "@types/pg": "^8.15.5",
     "prisma": "^6.18.0",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
   }
 }
