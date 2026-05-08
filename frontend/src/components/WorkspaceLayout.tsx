@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import StepsList from './StepsList';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import api from '@/api';
-import { parseSteps } from '@/parseSteps';
+import { parseSteps, parseIntroText } from '@/parseSteps';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { ArrowRight, File } from 'lucide-react';
@@ -19,6 +19,7 @@ const WorkspaceLayout = () => {
   const location = useLocation()
   const prompt = location.state?.prompt
   const [steps, setSteps] = useState<Step[]>([]);
+  const [llmMessage, setLlmMessage] = useState('');
   const [currentStep, setCurrentStep] = useState(1);
   const [showPublishPopup, setShowPublishPopup] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -30,6 +31,7 @@ const WorkspaceLayout = () => {
   const webContainer = useWebContainer();
   const [previewUrl, setPreviewUrl] = useState('');
   const [previewStatus, setPreviewStatus] = useState<'idle' | 'installing' | 'starting' | 'ready' | 'error'>('idle');
+  const [initComplete, setInitComplete] = useState(false);
 
   async function init() {
     try {
@@ -48,10 +50,14 @@ const WorkspaceLayout = () => {
         }))
       })
 
+      setLlmMessage(parseIntroText(stepsResponse.data.response));
+
       setSteps(s => [...s, ...parseSteps(stepsResponse.data.response).map(x => ({
         ...x,
         status: "pending" as const
       }))])
+
+      setInitComplete(true);
     } catch (err) {
       console.error("init() failed:", err);
       setPreviewStatus('error');
@@ -178,9 +184,9 @@ const WorkspaceLayout = () => {
   const lastInstalledPkgJson = useRef<string | null>(null);
   const devServerStarted = useRef(false);
 
-  // Bootstrap: install deps when package.json appears/changes, start dev server once
+  // Bootstrap: install deps only after init() has finished (both /api/template + /api/chat)
   useEffect(() => {
-    if (!webContainer || !packageJsonContent) return;
+    if (!webContainer || !packageJsonContent || !initComplete) return;
 
     // Skip if we already installed with this exact package.json
     if (lastInstalledPkgJson.current === packageJsonContent) return;
@@ -252,7 +258,7 @@ const WorkspaceLayout = () => {
 
     bootstrap();
     return () => { cancelled = true; };
-  }, [webContainer, packageJsonContent]);
+  }, [webContainer, packageJsonContent, initComplete]);
 
   const handleStepClick = (stepId: number) => {
     setCurrentStep(stepId);
@@ -265,7 +271,8 @@ const WorkspaceLayout = () => {
     setShowPublishPopup(false);
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = (e?: React.FormEvent | React.MouseEvent) => {
+    e?.preventDefault();
     setShowPublishPopup(true);
   }
 
@@ -311,19 +318,20 @@ const WorkspaceLayout = () => {
             steps={steps}
             currentStep={currentStep}
             onStepClick={handleStepClick}
+            llmMessage={llmMessage}
             className="flex-1 min-h-0 overflow-auto custom-scrollbar"
           />
-          <form className="relative">
+          <form className="relative" onSubmit={handleSubmit}>
             <textarea
               ref={inputRef as any}
               style={{ height: '120px', width: '100%', resize: 'none' }}
               autoFocus
-              className="bg-[#191919] p-3 pr-14 w-full text-white align-top custom-scrollbar focus:outline-none focus:ring-0 focus:border-transparent focus:shadow-none"
+              className="bg-neutral-800 p-3 pr-14 w-full text-white align-top custom-scrollbar focus:outline-none focus:ring-0 focus:border-transparent focus:shadow-none"
               rows={5}
             />
             {prompt.trim() ? (
               <Button
-                type="submit"
+                type="button"
                 size="icon"
                 className="absolute right-2 top-1/4 -translate-y-1/2 transition-all duration-300"
                 onClick={handleSubmit}
